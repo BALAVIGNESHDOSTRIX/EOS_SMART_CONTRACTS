@@ -14,3 +14,7 @@ https://eospark.com/Mainnet    ---------->  Like a Etherscan for getting EOS Tok
 
 
 7d47aae09c97dbc21d52c6d9f17bb70a1f1f2fda5f81b3ef18979b74b2070d8c  ---------> JungleTestnet Chain ID
+
+
+
+https://playground.eosrio.io/    ------------------> For Official Testnet and IDE for Community Developers
