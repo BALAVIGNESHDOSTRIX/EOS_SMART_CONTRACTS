@@ -33,7 +33,8 @@ class employee: public contract{
         }
 }
 
-        //@abi table faregis i64
+
+  //@abi table faregis i64
         struct faregis{
         account_name _name;
         uint64_t age;
@@ -43,14 +44,14 @@ class employee: public contract{
         uint64_t primary_key() const{return _name;}
         EOSLIB_SERIALIZE(faregis,(_name)(age)(address_)(contact_));
 
-
+        
 };
 
 typedef multi_index<N(faregis),faregis> _faregis; //farmer Registration
 
 
- //@abi action
-  void addprobyfar(account_name _nam,string _proname,uint64_t _price,uint64_t _qty){
+//@abi action
+  void addprobyfar(account_name _nam,string farmn,account_name _proname,uint64_t _price,uint64_t _qty){
 
                 _faregis regis(_self,_self);
                 auto iter = regis.find(_nam);
@@ -62,32 +63,40 @@ typedef multi_index<N(faregis),faregis> _faregis; //farmer Registration
 
                         _farmer farmers(_self,_self);
 
+                        auto iter = farmers.find(_proname);
+
+                        if(iter == farmers.end()){
                         farmers.emplace(_self,[&](auto& farm){
 
-                                farm._name = _nam;
-                                farm.proname.push_back(_proname);
+                                farm.proname = _proname;
+                                farm._farmern = farmn;
                                 farm.price = _price;
-                                farm.qty = _qty;
+                                farm._qty = _qty;
+
                         });
+                        }else{
+                                print(" The details are already exsists");
+                        }
+
+
+
                 }
 }
-
-
  //@abi table farmerpro i64
         struct farmerpro{
-        account_name _name;
-        vector<string> proname;
-        string price;
-        uint64_t qty;
-
-        uint64_t primary_key() const{return _name;}
-        EOSLIB_SERIALIZE(farmerpro, (_name)(proname)(price)(qty));
+        account_name proname;
+        string _farmern;
+        uint64_t price;
+        uint64_t _qty;
+    
+        uint64_t primary_key() const{return proname;}
+        EOSLIB_SERIALIZE(farmerpro,(proname)(_farmern)(price)(_qty));
         };
 
 typedef multi_index<N(farmerpro),farmerpro> _farmer; //farmer product details
 
 
- //@abi action
+  //@abi action
         void supregis(account_name _name,uint64_t _exp,uint64_t _contact,string _add){
 
         _supreg supregis(_self,_self);
@@ -108,7 +117,8 @@ typedef multi_index<N(farmerpro),farmerpro> _farmer; //farmer product details
                 }
 } 
 
- //@abi table supreg i64
+
+//@abi table supreg i64
         struct supreg{
         account_name _name;
         uint64_t exp;
@@ -123,11 +133,11 @@ typedef multi_index<N(farmerpro),farmerpro> _farmer; //farmer product details
         };
 typedef multi_index<N(supreg),supreg> _supreg; //Supplier Registration
 
-
-//@abi action
-        void supbuypro(account_name _supnm,uint64_t _time,account_name _farnam,string pronam_,uint64_t _price,uint64_t _qty){  
- _supreg supregis(_self,_self);
-
+  //@abi action
+        void supbuypro(account_name _supnm,string _supnmk,uint64_t _time,string _farnam,string pronam_,uint64_t _price,uint64_t _qty){  
+        
+        _supreg supregis(_self,_self);
+ 
         auto iter = supregis.find(_supnm);
 
         if(iter == supregis.end()){
@@ -135,82 +145,71 @@ typedef multi_index<N(supreg),supreg> _supreg; //Supplier Registration
                 }else{
                         _supbuy supbuys(_self,_self);
 
-                        supbuys.emplace(_self,[&](auto& buy){
+                        auto iter = supbuys.find(_time);
+                        if(iter == supbuys.end()){
 
-                                buy.supnam = _supnm;
+                         supbuys.emplace(_self,[&](auto& buy){
+
+                                buy._time = _time;
                                 buy.farmern = _farnam;
                                 buy.proname = pronam_;
                                 buy.price = _price;
                                 buy.qty = _qty;
                         });
+        
 
-                        _farmdash farmdash(_self,_self);
+                        _fardash dashs(_self,_self);
 
-                        farmdash.emplace(_self,[&](auto& farm){
-                                farm._farmn =  _farnam;
-                                farm._supname = _supnm;
-                                farm._cropname = pronam_;
-                        });
+                        auto ite = dashs.find(_time);
+                        if(ite == dashs.end()){
 
-                        _farmdashi farms(_self,_self);
+ dashs.emplace(_self,[&](auto& shs){
 
-                        farms.emplace(_self,[&](auto& mrs){
-
-                        mrs._farmnm = _farnam;
-                        mrs._qty = _qty;
-                        mrs._price = _price;
-                        mrs._qty = _qty;
-                        mrs._date = _time;
-                        });
- }
+                                                shs._time = _time;
+                                                shs._supname = _supnmk;
+                                                shs._cropm = pronam_;
+                                                shs.qty = _qty;
+                                                shs.price = _price;
+                                        });
+                                }
+                        }
+                }
 }
 
-
+//@abi table supbuy i64
             struct supbuy{
-
-
-        account_name supnam;
-        account_name farmern;
+        uint64_t _time;
+        string farmern;
         string proname;
         uint64_t price;
         uint64_t qty;
 
-        uint64_t primary_key() const{return supnam;}
+        uint64_t primary_key() const{return _time;}
 
-        EOSLIB_SERIALIZE(supbuy,(supnam)(farmern)(proname)(price)(qty));
+        EOSLIB_SERIALIZE(supbuy,(_time)(farmern)(proname)(price)(qty));
         };
 
 typedef multi_index<N(supbuy),supbuy> _supbuy;
+//@abi table fardash i64
 
-//@abi table farmdash i64
+        struct fardash{
 
-        struct farmdash{
-                account_name _farmn;
-                account_name _supname;
-                string _cropname;
+        uint64_t _time;
+        string _supname;
+        string _cropm;
+        uint64_t qty;
+        uint64_t price;
+        uint64_t primary_key() const{return _time;}
 
-                uint64_t primary_key() const{return _farmn;}
-                EOSLIB_SERIALIZE(farmdash,(_farmn)(_supname)(_cropname));
-        };
+        EOSLIB_SERIALIZE(fardash,(_time)(_supname)(_cropm)(qty)(price));
+        };      
 
-     typedef multi_index<N(farmdash),farmdash> _farmdash;//farmaer dashboard information
- //@abi table farmdashi i64
-
-        struct farmdashi{
-
-                account_name _farmnm;
-                uint64_t _qty;
-                uint64_t _price;
-                uint64_t _date;
-
-               uint64_t primary_key() const{return _farmnm;} 
-                EOSLIB_SERIALIZE(farmdashi,(_farmnm)(_qty)(_price)(_date));
-        }; 
-
-        typedef multi_index<N(farmdashi),farmdashi> _farmdashi; //Framer dashboard information
+        typedef multi_index<N(fardash),fardash> _fardash;
+        
 
 
 };
 
 EOSIO_ABI(employee,(fareg)(addprobyfar)(supregis)(supbuypro))
 }
+
