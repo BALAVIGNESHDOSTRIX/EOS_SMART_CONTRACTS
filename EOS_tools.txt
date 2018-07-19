@@ -10,11 +10,11 @@ https://tbfleming.github.io/cib/eos.html#gist=253e84d14e13e713917aac68e737d48f  
 https://eospark.com/Jungle     ---------> Like a Etherscan for getting EOS Token details and Testnet details
 
 
-https://eospark.com/Mainnet    ---------->  Like a Etherscan for getting EOS Token details and Mainnet details
+
 
 
 7d47aae09c97dbc21d52c6d9f17bb70a1f1f2fda5f81b3ef18979b74b2070d8c  ---------> JungleTestnet Chain ID
 
 
 
-https://playground.eosrio.io/    ------------------> For Official Testnet and IDE for Community Developers
+
